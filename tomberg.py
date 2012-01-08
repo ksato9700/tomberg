@@ -13,15 +13,25 @@ class Tomberg:
         self.stages = self.server['stages']
 
     def read_plist(self, filename):
-        plist = plistlib.readPlist(filename)
-        title = plist['title']
-        stage_id, _ = self.stages.save({'title':plist['title']})
+        self.plist = plistlib.readPlist(filename)
+
+    def write_to_db(self):
+        stage_id, _ = self.stages.save({'title':self.plist['title']})
         db = self.server.create('scenes-' + stage_id)
-        for s in plist['scenes']:
+        for s in self.plist['scenes']:
             db.save(s)
-        #print json.dumps(plist, indent=4)
+        db["_design/scenes"] = {
+            "language": "javascript",
+            "views": {
+                "all": {
+                    "map":"function(doc) {emit(null, doc);}"
+                    }
+                }
+            }
+        #print json.dumps(self.plist, indent=4)
 
 if __name__ == '__main__':
     tb = Tomberg(sys.argv[1])
     tb.read_plist(sys.argv[2])
+    tb.write_to_db()
     
