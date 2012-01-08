@@ -18,13 +18,16 @@ class Tomberg:
     def write_to_db(self):
         stage_id, _ = self.stages.save({'title':self.plist['title']})
         db = self.server.create('scenes-' + stage_id)
+        i = 0
         for s in self.plist['scenes']:
+            s['order'] = i
             db.save(s)
+            i += 1
         db["_design/scenes"] = {
             "language": "javascript",
             "views": {
                 "all": {
-                    "map":"function(doc) {emit(null, doc);}"
+                    "map":"function(doc) {emit(doc.order, doc);}"
                     }
                 }
             }
