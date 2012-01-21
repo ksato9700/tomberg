@@ -9,8 +9,9 @@ import json
 
 class Tomberg:
     def __init__(self, couchdb_host):
-        self.server = couchdb.Server(couchdb_host)
-        self.stages = self.server['stages']
+        if couchdb_host:
+            self.server = couchdb.Server(couchdb_host)
+            self.stages = self.server['stages']
 
     def read_plist(self, filename):
         self.plist = plistlib.readPlist(filename)
