@@ -7,6 +7,8 @@ import couchdb
 import plistlib
 import json
 
+DEFAULT_FORMAT = "clock"
+
 class Tomberg:
     def __init__(self, couchdb_host):
         if couchdb_host:
@@ -17,7 +19,10 @@ class Tomberg:
         self.plist = plistlib.readPlist(filename)
 
     def write_to_db(self):
-        stage_id, _ = self.stages.save({'title':self.plist['title']})
+        stage_id, _ = self.stages.save({
+	    'title': self.plist['title'],
+	    'format': self.plist.get('format', DEFAULT_FORMAT)
+	    })
         db = self.server.create('scenes-' + stage_id)
         i = 0
         for s in self.plist['scenes']:

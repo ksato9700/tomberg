@@ -62,7 +62,8 @@ def generate_stage(kana_mapping):
     random.shuffle(kana_list)
     res = {
         'title': 'Kana Test ' + str(datetime.datetime.now()),
-        'scenes': []
+        'format': 'multichoice'
+	'scenes': []
         }
     for key in kana_list:
         question = key
@@ -73,7 +74,7 @@ def generate_stage(kana_mapping):
         rs -= set(key)
         for i in range(3):
             if not answers[i]:
-                answers[i] = kana_mapping[rs.pop()] 
+                answers[i] = kana_mapping[rs.pop()]
         res['scenes'].append(
             {
                 'question': question,
@@ -83,7 +84,6 @@ def generate_stage(kana_mapping):
             )
     return res
 
-            
 def main():
     plist = generate_stage(hiragana_mapping)
     plistlib.writePlist(plist, sys.argv[1])
